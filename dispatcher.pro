@@ -9,6 +9,8 @@ QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+CONFIG += c++11
+
 RC_ICONS = web.ico
 VERSION = 1.0.0.1
 QMAKE_TARGET_COMPANY = Kontel Co
@@ -31,7 +33,9 @@ SOURCES += main.cpp\
     server/server.cpp \
     server/responder.cpp \
     link/controllerdata.cpp \
-    link/objectdata.cpp
+    link/objectdata.cpp \
+    link/objlist.cpp \
+    dynamic/dynreqmanager.cpp
 
 HEADERS  += mainwindow.h \
     qhttpserver-master/http-parser/http_parser.h \
@@ -45,6 +49,8 @@ HEADERS  += mainwindow.h \
     server/responder.h \
     link/controllerdata.h \
     link/objectdata.h \
-    link/variables.h
+    link/variables.h \
+    link/objlist.h \
+    dynamic/dynreqmanager.h
 
 FORMS    += mainwindow.ui

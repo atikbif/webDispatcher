@@ -1,6 +1,8 @@
 #ifndef VARIABLES_H
 #define VARIABLES_H
 
+/* базовые типы данных для объектов */
+
 #include <QVector>
 #include <QDateTime>
 
@@ -9,19 +11,18 @@ class ObjVariable
 public:
     enum PRIORITY{HIGH_PR,NORM_PR,LOW_PR};
 private:
-    const QString name;
-    const QString comment;
+    QString name;
+    QString comment;
     PRIORITY displPriority;
 public:
-
     ObjVariable(const QString &m_name, const QString &m_comment = "", PRIORITY prior = NORM_PR):
         name(m_name), comment(m_comment), displPriority(prior)
     {
 
     }
-    QString getName() {return name;}
-    QString getComment() {return comment;}
-    PRIORITY getDisplayPriority() {return displPriority;}
+    QString getName() const {return name;}
+    QString getComment() const {return comment;}
+    PRIORITY getDisplayPriority() const {return displPriority;}
     void setDisplayPriority(PRIORITY prior) {displPriority=prior;}
 };
 
@@ -105,6 +106,8 @@ class VarStorage
     QVector<AnalogValue*> anVars;
     QVector<DiscretValue*> discrVars;
     QVector<MessageValue*> messageVars;
+    VarStorage(const VarStorage&);
+    VarStorage& operator=(const VarStorage&);
 public:
     VarStorage() {}
     int getAnVarCount() {return anVars.count();}
@@ -126,12 +129,33 @@ public:
         }
         return AnalogValue("");
     }
+    bool updAnalogVar(const AnalogValue &var) {
+        foreach (AnalogValue * v, anVars) {
+            if(v->getName()==var.getName()) {
+                *v = var;
+                return true;
+            }
+        }
+        return false;
+    }
+
     DiscretValue getDiscreteVar(int num) {
         if((num>=0)&&(num<getDiscrVarCount())) {
             return *discrVars.at(num);
         }
         return DiscretValue("");
     }
+
+    bool updDiscreteVar(const DiscretValue &var) {
+        foreach (DiscretValue *v, discrVars) {
+            if(v->getName()==var.getName()) {
+                *v = var;
+                return true;
+            }
+        }
+        return false;
+    }
+
     MessageValue getMessageVar(int num) {
         if((num>=0)&&(num<getMessageVarCount())) {
             return *messageVars.at(num);
@@ -139,19 +163,37 @@ public:
         return MessageValue("");
     }
 
+    bool updMessageVar(const MessageValue &var) {
+        foreach(MessageValue *v, messageVars) {
+            if(v->getName()==var.getName()) {
+                *v = var;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     void clearAll(void) {
         foreach (AnalogValue *var, anVars) {
             delete var;
+            var = nullptr;
         }
         anVars.clear();
         foreach(DiscretValue *var, discrVars) {
             delete var;
+            var = nullptr;
         }
         discrVars.clear();
         foreach(MessageValue *var, messageVars) {
             delete var;
+            var = nullptr;
         }
         messageVars.clear();
+    }
+
+    ~VarStorage() {
+        clearAll();
     }
 };
 
