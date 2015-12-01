@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<contrConf>
+  <definition>контроллер 3</definition>
+  <ip>192.168.100.37</ip>
+  <port>12144</port>
+  <vars>
+    <analog>
+      <name>ADC1</name>
+      <comment>P1</comment>
+      <priority>high</priority>
+      <address>0</address>
+    </analog>
+    <analog>
+      <name>ADC2</name>
+      <comment>битовые переменные</comment>
+      <priority>none</priority>
+      <address>1</address>
+    </analog>
+    <discrete>
+      <name>BIT1</name>
+      <comment>сигнал 1</comment>
+      <priority>high</priority>
+      <parent>ADC2</parent>
+      <bit>0</bit>
+    </discrete>
+    <discrete>
+      <name>BIT2</name>
+      <comment>сигнал 2</comment>
+      <priority>normal</priority>
+      <parent>ADC2</parent>
+      <bit>1</bit>
+    </discrete>
+    <discrete>
+      <name>BIT3</name>
+      <comment>сигнал 3</comment>
+      <priority>normal</priority>
+      <parent>ADC2</parent>
+      <bit>2</bit>
+    </discrete>
+    <discrete>
+      <name>BIT4</name>
+      <comment>сигнал 4</comment>
+      <priority>normal</priority>
+      <parent>ADC2</parent>
+      <bit>3</bit>
+    </discrete>
+    <message>
+      <name>M1</name>
+      <text>сообщение 7</text>
+      <type>info</type>
+      <parent>ADC2</parent>
+      <bit>5</bit>
+    </message>
+    <message>
+      <name>M2</name>
+      <text>сообщение 8</text>
+      <type>warning</type>
+      <parent>ADC2</parent>
+      <bit>6</bit>
+    </message>
+    <message>
+      <name>M3</name>
+      <text>сообщение 9</text>
+      <type>alarm</type>
+      <parent>ADC2</parent>
+      <bit>7</bit>
+    </message>
+  </vars>
+</contrConf>
+

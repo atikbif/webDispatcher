@@ -13,7 +13,7 @@ class ObjectData
     QString name;
     QString comment;
     QVector<QSharedPointer<ControllerData> > controllers;
-    int num;
+    QString htmlPageName;
     void addController(QSharedPointer<ControllerData> contr) {controllers.append(contr);}
 public:
     ObjectData(const QString &fName);
@@ -21,7 +21,7 @@ public:
     QSharedPointer<ControllerData> getController(int num);
     QString getName(void) {return name;}
     QString getComment(void) {return comment;}
-    int getNum(void) const {return num;}
+    QString getHTMLPageName(void) {return htmlPageName;}
     ~ObjectData();
 };
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<webConf>
+  <group name="Владимир">
+    <object xmlFile="ob_1/object.xml"/>
+    <object xmlFile="ob_2/object.xml"/>
+  </group>
+  <group name="Суздаль">
+    <object xmlFile="ob_3/object.xml"/>
+  </group>
+</webConf>
+
+

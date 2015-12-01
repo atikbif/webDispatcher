@@ -2,14 +2,18 @@
 #include "ui_mainwindow.h"
 #include "server/servermanager.h"
 #include <QDateTime>
+#include "link/objlist.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+    const QString mainXMLFileName="config.xml";
     ui->setupUi(this);
     ServerManager* manager = new ServerManager(this);
     connect(manager,SIGNAL(newClient(QString)),this,SLOT(newWebClient(QString)));
+    ObjList obTree(mainXMLFileName);
+    Q_UNUSED(obTree)
 }
 
 MainWindow::~MainWindow()

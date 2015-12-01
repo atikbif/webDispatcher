@@ -9,7 +9,7 @@
 class ObjVariable
 {
 public:
-    enum PRIORITY{HIGH_PR,NORM_PR,LOW_PR};
+    enum PRIORITY{HIGH_PR,NORM_PR,LOW_PR,NONE_PR};
 private:
     QString name;
     QString comment;
@@ -33,12 +33,15 @@ class AnalogValue: public ObjVariable
     int value;
     QDateTime varUpdTime;
     bool quality;
+    int addr;
 public:
     AnalogValue(const QString &m_name, const QString &m_comment="", PRIORITY prior = NORM_PR):
-        ObjVariable(m_name,m_comment,prior),value(0),varUpdTime(QDateTime()),quality(false)
+        ObjVariable(m_name,m_comment,prior),value(0),varUpdTime(QDateTime()),quality(false),addr(0)
     {
 
     }
+    int getAddr() const {return addr;}
+    void setAddr(int newAddr) {addr = newAddr;}
     int getValue() {return value;}
     void setValue(int m_value) {
         value = m_value;
@@ -81,6 +84,7 @@ public:
             }
         return false;
     }
+    void setParentName(const QString &parName) {analogParentName=parName;}
 };
 
 class MessageValue: public DiscretValue
@@ -96,9 +100,10 @@ public:
     {
 
     }
-    void setMessage(const QString &m_message);
-    QString getMessage(void) {return message;}
-    MESSAGETYPE getType(void) {return type;}
+    void setMessage(const QString &m_message) {message = m_message;}
+    QString getMessage(void) const {return message;}
+    MESSAGETYPE getType(void) const {return type;}
+    void setType(MESSAGETYPE mt) {type = mt;}
 };
 
 class VarStorage

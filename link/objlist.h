@@ -14,6 +14,7 @@ class ObjList
 {
     QHash<QString, QVector<QSharedPointer<ObjectData> > > objGroups;
     void createWebFiles(void);  // сгенерировать шаблоны для веб страниц
+    void clearAll(void);
 public:
     ObjList(const QString &fName);
     QStringList getGroupNames(void) const {return objGroups.keys();}

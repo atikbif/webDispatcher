@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<objConf>
+  <name>Котельная 2</name>
+  <comment>Егорова 21</comment>
+  <pageName>ob2.html</pageName>
+  <controller file="plc_1.xml"/>
+</objConf>
+
