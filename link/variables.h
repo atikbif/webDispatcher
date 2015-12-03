@@ -34,12 +34,20 @@ class AnalogValue: public ObjVariable
     QDateTime varUpdTime;
     bool quality;
     int addr;
+    float min,max,coeff;
 public:
     AnalogValue(const QString &m_name, const QString &m_comment="", PRIORITY prior = NORM_PR):
-        ObjVariable(m_name,m_comment,prior),value(0),varUpdTime(QDateTime()),quality(false),addr(0)
+        ObjVariable(m_name,m_comment,prior),value(0),varUpdTime(QDateTime()),quality(false),addr(0),
+        min(0),max(65535),coeff(1)
     {
 
     }
+    float getMin() const {return min;}
+    float getMax() const {return max;}
+    float getCoeff() const {return coeff;}
+    void setMin(float value) {min = value;}
+    void setMax(float value) {max = value;}
+    void setCoeff(float value) {coeff = value;}
     int getAddr() const {return addr;}
     void setAddr(int newAddr) {addr = newAddr;}
     int getValue() {return value;}

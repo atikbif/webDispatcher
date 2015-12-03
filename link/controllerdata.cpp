@@ -12,6 +12,9 @@ void ControllerData::readAnalogVars(QDomDocument &doc)
             QString comment;
             QString priority;
             QString addr;
+            QString min;
+            QString max;
+            QString coeff;
             QDomNodeList chNodes = e.childNodes();
             for(int j=0;j<chNodes.count();j++) {
                 QDomNode n = chNodes.item(j);
@@ -21,6 +24,9 @@ void ControllerData::readAnalogVars(QDomDocument &doc)
                     else if(e.tagName()=="comment") comment = e.text();
                     else if(e.tagName()=="priority") priority = e.text();
                     else if(e.tagName()=="address") addr = e.text();
+                    else if(e.tagName()=="min") min = e.text();
+                    else if(e.tagName()=="max") max = e.text();
+                    else if(e.tagName()=="coeff") coeff = e.text();
                 }
             }
             AnalogValue* v = new AnalogValue(ipAddr+":"+QString::number(portNum)+":"+name,comment);
@@ -31,6 +37,9 @@ void ControllerData::readAnalogVars(QDomDocument &doc)
             else if(priority=="none") pr = AnalogValue::NONE_PR;
             v->setDisplayPriority(pr);
             v->setAddr(addr.toInt());
+            if(!min.isEmpty()) v->setMin(min.toFloat());
+            if(!max.isEmpty()) v->setMax(max.toFloat());
+            if(!coeff.isEmpty()) v->setCoeff(coeff.toFloat());
             vars->addAnalogVar(v);
         }
     }

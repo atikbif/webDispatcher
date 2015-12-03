@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QString>
+#include "link/objlist.h"
 
 namespace Ui {
 class MainWindow;
@@ -11,15 +12,18 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+    ObjList* obTree;
+    static const QString mainXMLFileName;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
 private:
     Ui::MainWindow *ui;
+    void updTree(void);
 private slots:
     void newWebClient(const QString &ipAddr);
+    void on_pushButtonUpdObjects_clicked();
 };
 
 #endif // MAINWINDOW_H

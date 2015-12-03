@@ -36,7 +36,8 @@ SOURCES += main.cpp\
     link/controllerdata.cpp \
     link/objectdata.cpp \
     link/objlist.cpp \
-    dynamic/dynreqmanager.cpp
+    dynamic/dynreqmanager.cpp \
+    webPages/pagecreator.cpp
 
 HEADERS  += mainwindow.h \
     qhttpserver-master/http-parser/http_parser.h \
@@ -52,6 +53,7 @@ HEADERS  += mainwindow.h \
     link/objectdata.h \
     link/variables.h \
     link/objlist.h \
-    dynamic/dynreqmanager.h
+    dynamic/dynreqmanager.h \
+    webPages/pagecreator.h
 
 FORMS    += mainwindow.ui
