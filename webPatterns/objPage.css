@@ -1,0 +1,33 @@
+.bitData
+{
+    float: left;
+    width: 150px;
+    background-color: #efe;
+    border: 1px solid #888;
+    border-radius: 10px;
+    margin: 5px;
+    padding: 5px;
+    color:#7A5A5A;
+    box-shadow: 5px 5px 3px #cccccc;
+}
+.progress
+{
+    text-align: center;
+    text-shadow: 0px 1px 2px #00f;
+    background: #ccc;
+    margin: 0px;
+    padding: 0px;
+    border-radius: 7px;
+}
+.bitImage
+{
+    float:right;
+}
+.leftFloat
+{
+    float:left;
+}
+.rightFloat
+{
+    float:right;
+}

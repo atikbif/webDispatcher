@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>webPatterns/emptyPage.html</file>
+        <file>webPatterns/singleObject.html</file>
+        <file>webPatterns/groupOfObjects.html</file>
+        <file>webPatterns/objPage.css</file>
+        <file>webPatterns/objPage.js</file>
+        <file>webPatterns/anValue.js</file>
+        <file>webPatterns/objPage.html</file>
+    </qresource>
+</RCC>

@@ -9,7 +9,12 @@ class PageCreator
     ObjList &objects;
     void createIndexFile(const QString &fName);
     void createObjFile(QSharedPointer<ObjectData> ob);
-    void createObjStyle(const QString &fName);
+    void createObjStyle(QSharedPointer<ObjectData> ob);
+    void createObjScript(QSharedPointer<ObjectData> ob);
+
+    void addTabs(int tabCount, QString &str);
+
+    void createAnalogValuesScript(QSharedPointer<ObjectData> ob);
 public:
     PageCreator(ObjList &m_objects);
     void createPages(void);

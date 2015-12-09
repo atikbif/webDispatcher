@@ -57,3 +57,8 @@ HEADERS  += mainwindow.h \
     webPages/pagecreator.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    webpatterns.qrc
+
+DISTFILES +=

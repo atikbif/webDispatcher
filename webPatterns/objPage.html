@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>page title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+	
+	<script src='objPage_an.js'></script>
+	<script src='objPage.js'></script>
+	<link rel="stylesheet" href="objPage.css">
+</head>
+
+<body onload='init();'>
+    <div class="container">
+		<div class="alert alert-success">
+        <strong>obj name</strong>
+		(obj comment)
+        время опроса: 
+    </div>
+    <h2></h2>
+    <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#analog">аналог.</a></li>
+        <li><a data-toggle="tab" href="#discr">дискр.</a></li>
+        <li><a data-toggle="tab" href="#message">сообщения</a></li>
+    </ul>
+    <div class="tab-content">
+        <div id="analog" class="tab-pane fade in active">
+			<p></p>
+			<canvas id="ain1" width="160" height="100"></canvas>
+        </div>
+        <div id="discr" class="tab-pane fade">
+        </div>
+        <div id="message" class="tab-pane fade">
+        </div>
+    </div>
+    </div>
+</body>
+</html>
