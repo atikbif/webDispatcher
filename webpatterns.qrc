@@ -7,5 +7,7 @@
         <file>webPatterns/objPage.js</file>
         <file>webPatterns/anValue.js</file>
         <file>webPatterns/objPage.html</file>
+        <file>webPatterns/dValue.js</file>
+        <file>webPatterns/objPage_message.js</file>
     </qresource>
 </RCC>

@@ -10,15 +10,7 @@
     color:#7A5A5A;
     box-shadow: 5px 5px 3px #cccccc;
 }
-.progress
-{
-    text-align: center;
-    text-shadow: 0px 1px 2px #00f;
-    background: #ccc;
-    margin: 0px;
-    padding: 0px;
-    border-radius: 7px;
-}
+
 .bitImage
 {
     float:right;

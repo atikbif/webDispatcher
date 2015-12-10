@@ -15,6 +15,8 @@ class PageCreator
     void addTabs(int tabCount, QString &str);
 
     void createAnalogValuesScript(QSharedPointer<ObjectData> ob);
+    void createDiscreteValuesScript(QSharedPointer<ObjectData> ob);
+    void createMessageScript(QSharedPointer<ObjectData> ob);
 public:
     PageCreator(ObjList &m_objects);
     void createPages(void);

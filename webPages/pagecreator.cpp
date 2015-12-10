@@ -106,6 +106,8 @@ void PageCreator::createObjFile(QSharedPointer<ObjectData> ob)
     createObjStyle(ob);
     createObjScript(ob);
     createAnalogValuesScript(ob);
+    createDiscreteValuesScript(ob);
+    createMessageScript(ob);
     QFile pFile(":/webPatterns/objPage.html"); // pattern
     if(pFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&pFile);
@@ -123,9 +125,16 @@ void PageCreator::createObjFile(QSharedPointer<ObjectData> ob)
         QString styleFileName = tmp + ".css";
         QString scriptFileName = tmp + ".js";
         QString anScriptFileName = tmp + "_an.js";
+        QString dScriptFileName = tmp + "_discr.js";
+        QString mScriptFileName = tmp + "_message.js";
         pattern.replace("objPage.css",styleFileName);
         pattern.replace("objPage.js",scriptFileName);
         pattern.replace("objPage_an.js",anScriptFileName);
+        pattern.replace("objPage_discr.js",dScriptFileName);
+        pattern.replace("objPage_message.js",mScriptFileName);
+
+        pattern.replace("obj name",ob->getName());
+        pattern.replace("obj comment",ob->getComment());
 
         QVector<AnalogValue*> anHighPrior;
         QVector<AnalogValue*> anStPrior;
@@ -167,6 +176,54 @@ void PageCreator::createObjFile(QSharedPointer<ObjectData> ob)
             foreach (AnalogValue* var, anLowPrior) {
                 QString curVar = anP;
                 curVar.replace("ain1","ain_"+var->getName());
+                pattern.insert(pos,curVar);
+                pos+=curVar.length();
+                delete var;
+            }
+        }
+
+        QVector<DiscretValue*> dHighPrior;
+        QVector<DiscretValue*> dStPrior;
+        QVector<DiscretValue*> dLowPrior;
+
+        for(int i=0;i<contrCount;i++) {
+            QSharedPointer<ControllerData> c = ob->getController(i);
+            QSharedPointer<VarStorage> vars = c->getVars();
+            int dVarCnt = vars->getDiscrVarCount();
+            for(int j=0;j<dVarCnt;j++) {
+                DiscretValue* dv = new DiscretValue(vars->getDiscreteVar(j));
+                DiscretValue::PRIORITY pr = dv->getDisplayPriority();
+                if(pr==DiscretValue::HIGH_PR) dHighPrior.append(dv);
+                else if(pr==DiscretValue::NORM_PR) dStPrior.append(dv);
+                else if(pr==DiscretValue::LOW_PR) dLowPrior.append(dv);
+            }
+        }
+
+        QRegExp dVar("[ \\t]*<div class=\"bitData\"[^\\n]*</div>\\n");
+        pos = dVar.indexIn(pattern);
+        if(pos!=-1) {
+            QString dP = dVar.cap();
+            pattern.remove(dP);
+            foreach (DiscretValue* var, dHighPrior) {
+                QString curVar = dP;
+                curVar.replace("dinName",var->getComment());
+                curVar.replace("di1","di_"+var->getName());
+                pattern.insert(pos,curVar);
+                pos+=curVar.length();
+                delete var;
+            }
+            foreach (DiscretValue* var, dStPrior) {
+                QString curVar = dP;
+                curVar.replace("dinName",var->getComment());
+                curVar.replace("di1","di_"+var->getName());
+                pattern.insert(pos,curVar);
+                pos+=curVar.length();
+                delete var;
+            }
+            foreach (DiscretValue* var, dLowPrior) {
+                QString curVar = dP;
+                curVar.replace("dinName",var->getComment());
+                curVar.replace("di1","di_"+var->getName());
                 pattern.insert(pos,curVar);
                 pos+=curVar.length();
                 delete var;
@@ -272,6 +329,46 @@ void PageCreator::createAnalogValuesScript(QSharedPointer<ObjectData> ob)
     QString scriptFileName = fName.remove(QRegExp(".html$"))+"_an.js";
 
     QFile pFile(":/webPatterns/anValue.js"); // pattern
+    if(pFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&pFile);
+        in.setCodec("UTF-8");
+        QString pattern = in.readAll();
+        pFile.close();
+        QFile file(scriptFileName);
+        if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream out(&file);
+            out.setCodec("UTF-8");
+            out << pattern;
+        }
+    }
+}
+
+void PageCreator::createDiscreteValuesScript(QSharedPointer<ObjectData> ob)
+{
+    QString fName = QApplication::applicationDirPath() + "/html/" + ob->getHTMLPageName();
+    QString scriptFileName = fName.remove(QRegExp(".html$"))+"_discr.js";
+
+    QFile pFile(":/webPatterns/dValue.js"); // pattern
+    if(pFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        QTextStream in(&pFile);
+        in.setCodec("UTF-8");
+        QString pattern = in.readAll();
+        pFile.close();
+        QFile file(scriptFileName);
+        if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream out(&file);
+            out.setCodec("UTF-8");
+            out << pattern;
+        }
+    }
+}
+
+void PageCreator::createMessageScript(QSharedPointer<ObjectData> ob)
+{
+    QString fName = QApplication::applicationDirPath() + "/html/" + ob->getHTMLPageName();
+    QString scriptFileName = fName.remove(QRegExp(".html$"))+"_message.js";
+
+    QFile pFile(":/webPatterns/objPage_message.js"); // pattern
     if(pFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream in(&pFile);
         in.setCodec("UTF-8");
