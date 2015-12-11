@@ -16,12 +16,14 @@
 </head>
 
 <body onload='init();'>
-    <div class="container">
-		<div class="alert alert-success">
-        <strong>obj name</strong>
-		(obj comment)
-        время опроса: 
+    <div class="panel panel-default" id="obStat">
+        <div class="panel-heading">
+            <strong>obj name</strong>
+            (obj comment)
+            время опроса:<span id="obTime"></span>
+        </div>
     </div>
+    <p id="debug"></p>
     <h2></h2>
     <ul class="nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#analog">аналог.</a></li>

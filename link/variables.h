@@ -18,7 +18,6 @@ public:
     ObjVariable(const QString &m_name, const QString &m_comment = "", PRIORITY prior = NORM_PR):
         name(m_name), comment(m_comment), displPriority(prior)
     {
-
     }
     QString getName() const {return name;}
     QString getComment() const {return comment;}
@@ -30,14 +29,11 @@ public:
 
 class AnalogValue: public ObjVariable
 {
-    int value;
-    QDateTime varUpdTime;
-    bool quality;
     int addr;
     float min,max,coeff;
 public:
     AnalogValue(const QString &m_name, const QString &m_comment="", PRIORITY prior = NORM_PR):
-        ObjVariable(m_name,m_comment,prior),value(0),varUpdTime(QDateTime()),quality(false),addr(0),
+        ObjVariable(m_name,m_comment,prior),addr(0),
         min(0),max(65535),coeff(1)
     {
 
@@ -50,14 +46,6 @@ public:
     void setCoeff(float value) {coeff = value;}
     int getAddr() const {return addr;}
     void setAddr(int newAddr) {addr = newAddr;}
-    int getValue() {return value;}
-    void setValue(int m_value) {
-        value = m_value;
-        varUpdTime = QDateTime::currentDateTime();
-        quality = true;
-    }
-    void setBadQuality(void) {quality=false;}
-    bool getQuality(void) {return quality;}
 };
 
 class DiscretValue: public ObjVariable
@@ -75,7 +63,6 @@ public:
     DiscretValue(const QString &m_name, const QString &m_comment="", PRIORITY prior = NORM_PR) :
         ObjVariable(m_name,m_comment,prior),analogParentName(""), bitNum(0)
     {
-
     }
     int getBitNum(void) {return bitNum;}
     bool setBitNum(int m_bitNum) {
@@ -86,12 +73,6 @@ public:
         return false;
     }
     QString getParentName(void) {return analogParentName;}
-    bool getValue(int anVarValue) {
-            if(checkBitNum(bitNum)) {
-                return anVarValue & (1<<bitNum);
-            }
-        return false;
-    }
     void setParentName(const QString &parName) {analogParentName=parName;}
 };
 

@@ -151,11 +151,5 @@ ControllerData::ControllerData(const QString &fName, QObject *parent):
     readMessageVars(doc);
 }
 
-void ControllerData::updData(int memAddr, const QByteArray &data)
-{
-    Q_UNUSED(memAddr)
-    Q_UNUSED(data)
-}
-
 
 

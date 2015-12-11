@@ -5,6 +5,9 @@
 #include <QApplication>
 #include <QFile>
 #include <QFileInfo>
+#include <QDateTime>
+#include <QUrlQuery>
+#include "dynamic/dynreqmanager.h"
 
 Responder::Responder(QHttpRequest *req, QHttpResponse *resp, QObject *parent) : QObject(parent)
 {
@@ -17,8 +20,9 @@ Responder::Responder(QHttpRequest *req, QHttpResponse *resp, QObject *parent) : 
     QString ext;
     QByteArray blob;
     QString fName = req->path();
-    if(fName.isEmpty()||(fName=="/")) fName = "ob1.html";
+    if(fName.isEmpty()||(fName=="/")) fName = "index.html";
     fName = QApplication::applicationDirPath() +"/html/" + fName;
+    QString reqBody = QUrlQuery(req->url()).queryItemValue("ob");
     if(QFile::exists(fName)) {
 
         QFile file(fName);
@@ -31,6 +35,21 @@ Responder::Responder(QHttpRequest *req, QHttpResponse *resp, QObject *parent) : 
             blob = file.readAll();
             flag = true;
             file.close();
+        }
+    }else if(!reqBody.isEmpty()){
+        fName = req->url().fileName();
+        if(fName=="din.txt") {
+            blob = DynReqManager::getData(fName,reqBody).toUtf8();
+            flag = true;
+        }else if(fName=="ain.txt") {
+            blob = DynReqManager::getData(fName,reqBody).toUtf8();
+            flag = true;
+        }else if(fName=="message.txt") {
+            blob = DynReqManager::getData(fName,reqBody).toUtf8();
+            flag = true;
+        }else if(fName=="status.txt") {
+            blob = DynReqManager::getData(fName,reqBody).toUtf8();
+            flag = true;
         }
     }
 

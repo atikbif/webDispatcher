@@ -70,3 +70,36 @@ function myProgress(id,name) {
 	};
 };
 
+function loadAin() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange=function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+		var resp = xhttp.responseText;
+		
+		var pattern = /;/;
+		var nameList = resp.split(pattern);
+        //document.getElementById("debug").innerHTML = resp;
+		var i,len;
+		for (i = 0, len = nameList.length; i < len; i++)  {
+			var str = nameList[i];
+			if(str.length>0) {
+				var idAndValue = /(.*)=(.*)/;
+				var par;
+				par = str.match(idAndValue);
+				var anV = getAnVar(par[1]);
+				if(anV!=null) {
+					var aData = par[2];
+					var adPattern = /_/;
+					var dataList = aData.split(adPattern);
+					anV.value = parseFloat(dataList[0]);
+					anV.colour = parseInt(dataList[1]);
+					anV.drawImage();
+				}
+			}			
+		}
+    }
+  };
+  xhttp.open("GET", "ain.txt?t=" + Math.random()+"&ob=obPageName", true);
+  xhttp.send();
+}
+

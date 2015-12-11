@@ -26,8 +26,6 @@ public:
     QString getComment(void) const {return comment;}
     QString getIP(void) const {return ipAddr;}
     int getPortNum(void) const {return portNum;}
-public slots:
-    void updData(int memAddr, const QByteArray &data);
 };
 
 
