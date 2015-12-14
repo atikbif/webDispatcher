@@ -7,11 +7,16 @@
 
 Server::Server(QObject *parent) : QObject(parent)
 {
-    QHttpServer *server = new QHttpServer(this);
+    server = new QHttpServer(this);
     connect(server, SIGNAL(newRequest(QHttpRequest*, QHttpResponse*)),
             this, SLOT(handleRequest(QHttpRequest*, QHttpResponse*)));
 
     server->listen(QHostAddress::Any, 8080);
+}
+
+Server::~Server()
+{
+    delete server;
 }
 
 void Server::handleRequest(QHttpRequest *req, QHttpResponse *resp)

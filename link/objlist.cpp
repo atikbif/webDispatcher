@@ -10,14 +10,14 @@ void ObjList::createWebFiles()
 
 void ObjList::clearAll()
 {
-    QStringList groups = getGroupNames();
+    /*QStringList groups = getGroupNames();
     foreach (QString grName, groups) {
         QStringList objects = getObjNamesInGroup(grName);
         foreach(QString objName, objects) {
             QSharedPointer<ObjectData> ptr = getObject(grName,objName);
             ptr.clear();
         }
-    }
+    }*/
     objGroups.clear();
 }
 

@@ -24,6 +24,7 @@
 
 #include <QDateTime>
 #include <QLocale>
+#include <QThread>
 
 #include "qhttpserver.h"
 #include "qhttpconnection.h"

@@ -61,4 +61,5 @@ FORMS    += mainwindow.ui
 RESOURCES += \
     webpatterns.qrc
 
-DISTFILES +=
+DISTFILES += \
+    variables.qmodel

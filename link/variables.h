@@ -52,7 +52,7 @@ class DiscretValue: public ObjVariable
 {
     QString analogParentName;
     int bitNum;
-    bool checkBitNum(int value) {
+    bool checkBitNum(int value) const{
         const int theFirstBitNum = 0;
         const int theLastBitNum = 15;
         if((value<theFirstBitNum)||(value>theLastBitNum)) return false;
@@ -104,20 +104,20 @@ class VarStorage
     VarStorage& operator=(const VarStorage&);
 public:
     VarStorage() {}
-    int getAnVarCount() {return anVars.count();}
-    int getDiscrVarCount() {return discrVars.count();}
-    int getMessageVarCount() {return messageVars.count();}
+    int getAnVarCount() const {return anVars.count();}
+    int getDiscrVarCount() const {return discrVars.count();}
+    int getMessageVarCount() const {return messageVars.count();}
     void addAnalogVar(AnalogValue *ptr) {anVars.append(ptr);}
     void addDiscreteVar(DiscretValue *ptr) {discrVars.append(ptr);}
     void addMessageVar(MessageValue *ptr) {messageVars.append(ptr);}
-    AnalogValue getAnalogVar(const QString &vName,bool *res) {
+    AnalogValue getAnalogVar(const QString &vName,bool *res) const{
         foreach (AnalogValue *var, anVars) {
            if(var->getName()==vName) {*res=true;return *var;}
         }
         *res = false;
         return  AnalogValue("");
     }
-    AnalogValue getAnalogVar(int num) {
+    AnalogValue getAnalogVar(int num) const{
         if((num>=0)&&(num<getAnVarCount())) {
             return *anVars.at(num);
         }
@@ -133,7 +133,7 @@ public:
         return false;
     }
 
-    DiscretValue getDiscreteVar(int num) {
+    DiscretValue getDiscreteVar(int num) const{
         if((num>=0)&&(num<getDiscrVarCount())) {
             return *discrVars.at(num);
         }
@@ -150,7 +150,7 @@ public:
         return false;
     }
 
-    MessageValue getMessageVar(int num) {
+    MessageValue getMessageVar(int num) const{
         if((num>=0)&&(num<getMessageVarCount())) {
             return *messageVars.at(num);
         }

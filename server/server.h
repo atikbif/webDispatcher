@@ -7,9 +7,11 @@
 class Server : public QObject
 {
     Q_OBJECT
+
+    QHttpServer *server;
 public:
     explicit Server(QObject *parent = 0);
-
+    ~Server();
 signals:
     void newClient(const QString &ipAddr);
 public slots:

@@ -66,5 +66,5 @@ function init() {
     }
     progressImg.src = "rect.png";
 	loadData();
-	tmr = setInterval(loadData, 5000);
+    tmr = setInterval(loadData, 2000);
 }

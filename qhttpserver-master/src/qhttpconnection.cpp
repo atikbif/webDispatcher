@@ -80,7 +80,7 @@ void QHttpConnection::socketDisconnected()
             return;
 
         m_request->setSuccessful(false);
-        Q_EMIT m_request->end();
+        //Q_EMIT m_request->end();
     }
 }
 
@@ -101,7 +101,6 @@ void QHttpConnection::updateWriteCount(qint64 count)
 void QHttpConnection::parseRequest()
 {
     Q_ASSERT(m_parser);
-
     while (m_socket->bytesAvailable()) {
         QByteArray arr = m_socket->readAll();
         http_parser_execute(m_parser, m_parserSettings, arr.constData(), arr.size());
@@ -126,8 +125,8 @@ void QHttpConnection::waitForBytesWritten()
 
 void QHttpConnection::responseDone()
 {
-    QHttpResponse *response = qobject_cast<QHttpResponse *>(QObject::sender());
-    if (response->m_last)
+    //QHttpResponse *response = qobject_cast<QHttpResponse *>(QObject::sender());
+    //if (response->m_last)
         m_socket->disconnectFromHost();
 }
 
@@ -213,8 +212,8 @@ int QHttpConnection::HeadersComplete(http_parser *parser)
     theConnection->m_request->setHeaders(theConnection->m_currentHeaders);
 
     /** set client information **/
-    theConnection->m_request->m_remoteAddress = theConnection->m_socket->peerAddress().toString();
-    theConnection->m_request->m_remotePort = theConnection->m_socket->peerPort();
+        theConnection->m_request->m_remoteAddress = theConnection->m_socket->peerAddress().toString();
+        theConnection->m_request->m_remotePort = theConnection->m_socket->peerPort();
 
     QHttpResponse *response = new QHttpResponse(theConnection);
     if (parser->http_major < 1 || parser->http_minor < 1)

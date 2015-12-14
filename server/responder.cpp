@@ -52,7 +52,6 @@ Responder::Responder(QHttpRequest *req, QHttpResponse *resp, QObject *parent) : 
             flag = true;
         }
     }
-
     if(flag) {
         if(ext=="css") resp->setHeader("Content-Type", "text/css");
         else if(ext=="js") resp->setHeader("Content-Type", "text/javascript");
@@ -63,7 +62,6 @@ Responder::Responder(QHttpRequest *req, QHttpResponse *resp, QObject *parent) : 
     }else {
         resp->writeHead(403);
         resp->write(QByteArray("File not found!"));
-        return;
     }
 }
 

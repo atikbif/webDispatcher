@@ -52,9 +52,9 @@ QSharedPointer<ControllerData> ObjectData::getController(int num)
 
 ObjectData::~ObjectData()
 {
-    foreach (QSharedPointer<ControllerData> ptr, controllers) {
+    /*foreach (QSharedPointer<ControllerData> ptr, controllers) {
         ptr.clear();
-    }
+    }*/
 }
 
 

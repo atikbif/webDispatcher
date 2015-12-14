@@ -26,6 +26,7 @@
 #include <QTcpSocket>
 #include <QVariant>
 #include <QDebug>
+#include <QThread>
 
 #include "qhttpconnection.h"
 
@@ -92,6 +93,7 @@ QHttpServer::QHttpServer(QObject *parent) : QObject(parent), m_tcpServer(0)
 
 QHttpServer::~QHttpServer()
 {
+    exit(0);
 }
 
 void QHttpServer::newConnection()
