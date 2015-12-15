@@ -37,7 +37,11 @@ SOURCES += main.cpp\
     link/objectdata.cpp \
     link/objlist.cpp \
     dynamic/dynreqmanager.cpp \
-    webPages/pagecreator.cpp
+    webPages/pagecreator.cpp \
+    dynamic/datastorage.cpp \
+    dynamic/analogdatavar.cpp \
+    dynamic/objectvars.cpp \
+    dynamic/discretedatavar.cpp
 
 HEADERS  += mainwindow.h \
     qhttpserver-master/http-parser/http_parser.h \
@@ -54,7 +58,11 @@ HEADERS  += mainwindow.h \
     link/variables.h \
     link/objlist.h \
     dynamic/dynreqmanager.h \
-    webPages/pagecreator.h
+    webPages/pagecreator.h \
+    dynamic/datastorage.h \
+    dynamic/analogdatavar.h \
+    dynamic/objectvars.h \
+    dynamic/discretedatavar.h
 
 FORMS    += mainwindow.ui
 
