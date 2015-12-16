@@ -3,10 +3,13 @@
 
 #include <QMutex>
 #include "objectvars.h"
+#include <QVector>
 
 class DataStorage
 {
-    QMutex mutex;
+    mutable QMutex mutex;
+    QVector<ObjectVars*> objects;
+
 public:
     static DataStorage& Instance()
     {
@@ -14,6 +17,9 @@ public:
         return singleton;
     }
     void updateObject(const ObjectVars &ob);
+    void clear();
+    int getObCount(void) const {return objects.count();}
+    ObjectVars getObject(int num) const;
 private:
     DataStorage();                                      // Private constructor
     ~DataStorage();

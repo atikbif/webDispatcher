@@ -41,7 +41,8 @@ SOURCES += main.cpp\
     dynamic/datastorage.cpp \
     dynamic/analogdatavar.cpp \
     dynamic/objectvars.cpp \
-    dynamic/discretedatavar.cpp
+    dynamic/discretedatavar.cpp \
+    dynamic/messagedatavar.cpp
 
 HEADERS  += mainwindow.h \
     qhttpserver-master/http-parser/http_parser.h \
@@ -62,7 +63,8 @@ HEADERS  += mainwindow.h \
     dynamic/datastorage.h \
     dynamic/analogdatavar.h \
     dynamic/objectvars.h \
-    dynamic/discretedatavar.h
+    dynamic/discretedatavar.h \
+    dynamic/messagedatavar.h
 
 FORMS    += mainwindow.ui
 
