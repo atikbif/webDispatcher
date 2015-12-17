@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += network
+QT       += serialport
 QT       += xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -42,7 +43,18 @@ SOURCES += main.cpp\
     dynamic/analogdatavar.cpp \
     dynamic/objectvars.cpp \
     dynamic/discretedatavar.cpp \
-    dynamic/messagedatavar.cpp
+    dynamic/messagedatavar.cpp \
+    link/linkmanager.cpp \
+    link/objectmanager.cpp \
+    link/linkobject.cpp \
+    Protocols/asciidecorator.cpp \
+    Protocols/checksum.cpp \
+    Protocols/commanddecorator.cpp \
+    Protocols/commandinterface.cpp \
+    Protocols/request.cpp \
+    Protocols/rk.cpp \
+    Protocols/rkcommand.cpp \
+    Protocols/udpdecorator.cpp \
 
 HEADERS  += mainwindow.h \
     qhttpserver-master/http-parser/http_parser.h \
@@ -64,7 +76,18 @@ HEADERS  += mainwindow.h \
     dynamic/analogdatavar.h \
     dynamic/objectvars.h \
     dynamic/discretedatavar.h \
-    dynamic/messagedatavar.h
+    dynamic/messagedatavar.h \
+    link/linkmanager.h \
+    link/objectmanager.h \
+    link/linkobject.h \
+    Protocols/asciidecorator.h \
+    Protocols/checksum.h \
+    Protocols/commanddecorator.h \
+    Protocols/commandinterface.h \
+    Protocols/request.h \
+    Protocols/rk.h \
+    Protocols/rkcommand.h \
+    Protocols/udpdecorator.h \
 
 FORMS    += mainwindow.ui
 

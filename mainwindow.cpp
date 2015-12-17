@@ -4,6 +4,7 @@
 #include <QDateTime>
 #include "webPages/pagecreator.h"
 
+
 const QString MainWindow::mainXMLFileName="config.xml";
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -17,11 +18,14 @@ MainWindow::MainWindow(QWidget *parent) :
     updTree();
     PageCreator pCr(*obTree);
     pCr.createPages();
+    link = new LinkManager(obTree);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete obTree;
+    delete link;
 }
 
 void MainWindow::updTree()

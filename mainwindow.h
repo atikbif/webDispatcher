@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QString>
 #include "link/objlist.h"
+#include "link/linkmanager.h"
 
 namespace Ui {
 class MainWindow;
@@ -13,6 +14,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     ObjList* obTree;
+    LinkManager* link;
     static const QString mainXMLFileName;
 public:
     explicit MainWindow(QWidget *parent = 0);
