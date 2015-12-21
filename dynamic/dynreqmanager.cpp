@@ -1,5 +1,7 @@
 #include "dynreqmanager.h"
 #include <QDateTime>
+#include "datastorage.h"
+
 
 const QString DynReqManager::discrFileName = "din.txt";
 const QString DynReqManager::analogFileName = "ain.txt";
@@ -8,54 +10,99 @@ const QString DynReqManager::obStatFileName = "status.txt";
 
 QString DynReqManager::getDiscreteData(const QString &reqObName)
 {
-    Q_UNUSED(reqObName)
-    QString res;
-    int r = qrand() % 2;
-    res+="di_192.168.100.35:12144:DI1="+QString::number(r)+";";
-    r = qrand() % 2;
-    res+="di_192.168.100.36:12144:BIT1="+QString::number(r)+";";
-    r = qrand() % 2;
-    res+="di_192.168.100.37:12144:BIT1="+QString::number(r)+";";
-    return res;
+    int obCount = DataStorage::Instance().getObCount();
+    for(int i=0;i<obCount;i++) {
+        ObjectVars vars = DataStorage::Instance().getObject(i);
+        QString obName = vars.getID();
+        obName.remove(".html");
+        if(obName==reqObName) {
+            QString res;
+            for(int j=0;j<vars.getDiscrVarCount();j++) {
+                DiscreteDataVar var = vars.getDiscreteVar(j);
+                int col = 0;
+                if(var.getColour()==DiscreteDataVar::GRAY) col=0;
+                else if(var.getColour()==DiscreteDataVar::WHITE) col=1;
+                else if(var.getColour()==DiscreteDataVar::BLACK) col=2;
+                res+=var.getID()+"=";
+                res+=QString::number(col) + ";";
+            }
+            return res;
+        }
+    }
+    return QString();
 }
 
 QString DynReqManager::getAnalogData(const QString &reqObName)
 {
-    Q_UNUSED(reqObName)
-    QString res;
-    float d;
-    int r = qrand() % 1000;d = (double)r*1.1;
-    int col = (qrand() % 3) + 1;
-    res+="ain_192.168.100.35:12144:ADC1="+QString::number(d)+"_"+ QString::number(col) +";";
-    r = qrand() % 1000;d = (double)r*1.1;
-    col = (qrand() % 3) + 1;
-    res+="ain_192.168.100.36:12144:ADC1="+QString::number(d)+"_"+ QString::number(col) +";";
-    r = qrand() % 300;d = (double)r*1.1;
-    col = (qrand() % 3) + 1;
-    res+="ain_192.168.100.37:12144:ADC1="+QString::number(d)+"_"+ QString::number(col) +";";
-    return res;
+    int obCount = DataStorage::Instance().getObCount();
+    for(int i=0;i<obCount;i++) {
+        ObjectVars vars = DataStorage::Instance().getObject(i);
+        QString obName = vars.getID();
+        obName.remove(".html");
+        if(obName==reqObName) {
+            QString res;
+            for(int j=0;j<vars.getAnVarCount();j++) {
+                AnalogDataVar var = vars.getAnalogVar(j);
+                res+=var.getID()+"=";
+                float value = var.getValue();
+                res+=QString::number(value);
+                int col = 0;
+                if(var.getColour()==AnalogDataVar::GRAY) col=0;
+                else if(var.getColour()==AnalogDataVar::GREEN) col=1;
+                else if(var.getColour()==AnalogDataVar::YELLOW) col=2;
+                else if(var.getColour()==AnalogDataVar::RED) col=3;
+                res+="_"+QString::number(col)+";";
+            }
+            return res;
+        }
+    }
+    return QString();
 }
 
 QString DynReqManager::getMessageData(const QString &reqObName)
 {
-    Q_UNUSED(reqObName)
-    QString res;
-    int r = (qrand() % 10) + 1;
-    for(int i=0;i<(int)r;i++) {
-        int t = (qrand() % 3) + 1;
-        QString m = "сообщение "  + QTime::currentTime().toString();
-        res+= m + "=" + QString::number(t) + ";";
+    int obCount = DataStorage::Instance().getObCount();
+    for(int i=0;i<obCount;i++) {
+        ObjectVars vars = DataStorage::Instance().getObject(i);
+        QString obName = vars.getID();
+        obName.remove(".html");
+        if(obName==reqObName) {
+            QString res;
+            for(int j=0;j<vars.getMessageVarCount();j++) {
+                MessageDataVar var = vars.getMessageVar(j);
+                res+=var.getMessage()+"=";
+                int col=1;
+                if(var.getColour()==MessageDataVar::GREEN) col=1;
+                else if(var.getColour()==MessageDataVar::YELLOW) col=2;
+                else if(var.getColour()==MessageDataVar::RED) col=3;
+                res+=QString::number(col)+";";
+            }
+            return res;
+        }
     }
-    return res;
+    return QString();
 }
 
 QString DynReqManager::geObtStatusData(const QString &reqObName)
 {
-    Q_UNUSED(reqObName)
-    QString res;
-    res = QDateTime::currentDateTime().toString();
-    res += "=" + QString::number((qrand() % 4));
-    return res;
+    int obCount = DataStorage::Instance().getObCount();
+    for(int i=0;i<obCount;i++) {
+        ObjectVars vars = DataStorage::Instance().getObject(i);
+        QString obName = vars.getID();
+        obName.remove(".html");
+        if(obName==reqObName) {
+            QString res;
+            res = vars.getTime().toString();
+            int col = 0;
+            if(vars.getColour()==ObjectVars::GRAY) col=0;
+            else if(vars.getColour()==ObjectVars::GREEN) col=1;
+            else if(vars.getColour()==ObjectVars::YELLOW) col=2;
+            else if(vars.getColour()==ObjectVars::RED) col=3;
+            res += "=" + QString::number(col);
+            return res;
+        }
+    }
+    return QString();
 }
 
 DynReqManager::DynReqManager()

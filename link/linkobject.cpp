@@ -8,14 +8,82 @@ using namespace RkProtocol;
 
 QVector<Request *> LinkObject::getRequestLine(QSharedPointer<ControllerData> plc)
 {
-    Q_UNUSED(plc)
     QVector<Request*> reqs;
-    for(int i=0;i<10;i++) {
-        Request* req = new Request();
-        req->setNetAddress(0);
-        req->setMemAddress(0);
-        req->setDataNumber(7);
-        reqs.append(req);
+    const int maxLength = 64;
+    const int maxSpace = 32;
+    int varCnt = plc->getVars()->getAnVarCount();
+    // take all analog vars
+    QVector<AnalogValue*> vars;
+    for(int i=0;i<varCnt;i++) {
+        AnalogValue* var = new AnalogValue(plc->getVars()->getAnalogVar(i));
+        vars.append(var);
+    }
+    if(vars.count()) {
+        // search min and max address
+        const int varSize = 2;
+        int minAddr = vars.at(0)->getAddr();
+        int maxAddr = minAddr + varSize - 1;
+        for(int i=0;i<vars.count();i++) {
+            int addr = vars.at(i)->getAddr();
+            if(addr+varSize-1>maxAddr) maxAddr = addr+varSize-1;
+            if(addr<minAddr) minAddr = addr;
+        }
+        // make memory map
+        QVector<bool> map;
+        map.resize(maxAddr-minAddr+1);
+        map.fill(false);
+        foreach (AnalogValue *var, vars) {
+            for(int i=0;i<varSize;i++) map.replace(var->getAddr()-minAddr+i,true);
+        }
+        bool newRequest = true;
+        int space = 0;
+        int reqLength = 0;
+        // scan map and create requests
+        Request* req = nullptr;
+        for(int i=0;i<map.count();i++) {
+            if(newRequest) {
+                if(map.at(i)) {
+                    newRequest = false;
+                    space = 0;
+                    reqLength = 1;
+                    req = new Request;
+                    req->setNetAddress(0);
+                    req->setMemAddress(i+minAddr);
+                    req->setDataNumber(reqLength);
+                    if(reqLength>=maxLength) {
+                        reqs.append(req);
+                        newRequest = true;
+                        req = nullptr;
+                    }
+                }
+            }else {
+                if(map.at(i)) {
+                    reqLength++;
+                    if(space) {reqLength+=space;space=0;}
+                    if(req!=nullptr) req->setDataNumber(reqLength);
+                    if(reqLength>=maxLength) {
+                        reqs.append(req);
+                        newRequest = true;
+                        req = nullptr;
+                    }
+                }else {
+                    space++;
+                    if(space>maxSpace) {
+                        reqs.append(req);
+                        newRequest = true;
+                        req = nullptr;
+                    }
+                    if(space+reqLength>=maxLength) {
+                        reqs.append(req);
+                        newRequest = true;
+                        req = nullptr;
+                    }
+                }
+            }
+        }
+        if(req!=nullptr) {
+            reqs.append(req);
+        }
     }
     return reqs;
 }
@@ -73,19 +141,83 @@ void LinkObject::answerAnalyse(QSharedPointer<ControllerData> plc, QHash<int, un
 
 void LinkObject::discreteAnalyse(QSharedPointer<ControllerData> plc, ObjectVars &obVars)
 {
-    Q_UNUSED(plc)
-    Q_UNUSED(obVars)
+    int dvarCnt = plc->getVars()->getDiscrVarCount();
+    for(int i=0;i<dvarCnt;i++) {
+        DiscretValue dVar = plc->getVars()->getDiscreteVar(i);
+        DiscreteDataVar dData(dVar.getName());
+        dData.setColour(DiscreteDataVar::GRAY);
+        dData.setValue(false);
+        for(int j=0;j<obVars.getAnVarCount();j++) {
+            AnalogDataVar anData = obVars.getAnalogVar(j);
+            QRegExp namePattern(".*"+dVar.getParentName()+"$");
+            if(namePattern.indexIn(anData.getID())!=-1) {
+                int value = anData.getValue();
+                if(value & (1 << dVar.getBitNum())) {
+                    dData.setValue(true);
+                    dData.setColour(DiscreteDataVar::BLACK);
+                }else {
+                    dData.setValue(false);
+                    dData.setColour(DiscreteDataVar::WHITE);
+                }
+                if(anData.getColour()==AnalogDataVar::GRAY)
+                    dData.setColour(DiscreteDataVar::GRAY);
+                break;
+            }
+        }
+        obVars.addDiscreteVar(dData);
+    }
 }
 
 void LinkObject::messageAnalyse(QSharedPointer<ControllerData> plc, ObjectVars &obVars)
 {
-    Q_UNUSED(plc)
-    Q_UNUSED(obVars)
+    int mvarCnt = plc->getVars()->getMessageVarCount();
+    for(int i=0;i<mvarCnt;i++) {
+        MessageValue mVar = plc->getVars()->getMessageVar(i);
+
+        for(int j=0;j<obVars.getAnVarCount();j++) {
+            AnalogDataVar anData = obVars.getAnalogVar(j);
+            QRegExp namePattern(".*"+mVar.getParentName()+"$");
+            if(namePattern.indexIn(anData.getID())!=-1) {
+                if(anData.getColour()!=AnalogDataVar::GRAY) {
+                    int value = anData.getValue();
+                    if(value & (1 << mVar.getBitNum())) {
+                        MessageDataVar mData;
+                        mData.setMessage(mVar.getMessage());
+                        if(mVar.getType()==MessageValue::ALARM) mData.setColour(MessageDataVar::RED);
+                        else if(mVar.getType()==MessageValue::WARNING) mData.setColour(MessageDataVar::YELLOW);
+                        else if(mVar.getType()==MessageValue::INFO) mData.setColour(MessageDataVar::GREEN);
+                        obVars.addMessageVar(mData);
+                    }
+                }
+            }
+        }
+    }
 }
 
 void LinkObject::colourAnalyse(ObjectVars &obVars)
 {
-    Q_UNUSED(obVars)
+    enum {GRAY,RED,YELLOW,GREEN} col;
+    col = GREEN;
+    for(int i=0;i<obVars.getMessageVarCount();i++) {
+        MessageDataVar var = obVars.getMessageVar(i);
+        if(var.getColour()==MessageDataVar::RED) {col = RED;break;}
+        if(var.getColour()==MessageDataVar::YELLOW) {
+            if(col==GREEN) col = YELLOW;
+        }
+    }
+    if(col!=RED) {
+        for(int i=0;i<obVars.getAnVarCount();i++) {
+            AnalogDataVar var = obVars.getAnalogVar(i);
+            if(var.getColour()==AnalogDataVar::GRAY) {
+                col = GRAY;
+                break;
+            }
+        }
+    }
+    if(col==GRAY) obVars.setColour(ObjectVars::GRAY);
+    else if(col==RED) obVars.setColour(ObjectVars::RED);
+    else if(col==GREEN) obVars.setColour(ObjectVars::GREEN);
+    else if(col==YELLOW) obVars.setColour(ObjectVars::YELLOW);
 }
 
 LinkObject::LinkObject(QSharedPointer<ObjectData> ptr, QObject *parent):QObject(parent),
