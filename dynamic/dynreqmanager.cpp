@@ -23,7 +23,7 @@ QString DynReqManager::getDiscreteData(const QString &reqObName)
                 if(var.getColour()==DiscreteDataVar::GRAY) col=0;
                 else if(var.getColour()==DiscreteDataVar::WHITE) col=1;
                 else if(var.getColour()==DiscreteDataVar::BLACK) col=2;
-                res+=var.getID()+"=";
+                res+="di_"+var.getID()+"=";
                 res+=QString::number(col) + ";";
             }
             return res;
@@ -43,7 +43,7 @@ QString DynReqManager::getAnalogData(const QString &reqObName)
             QString res;
             for(int j=0;j<vars.getAnVarCount();j++) {
                 AnalogDataVar var = vars.getAnalogVar(j);
-                res+=var.getID()+"=";
+                res+="ain_"+ var.getID()+"=";
                 float value = var.getValue();
                 res+=QString::number(value);
                 int col = 0;

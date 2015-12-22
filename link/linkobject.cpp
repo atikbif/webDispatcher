@@ -93,13 +93,13 @@ QHash<int, unsigned int> LinkObject::getAnswers(QVector<Request *> reqs, QUdpSoc
     QHash<int, unsigned int> answerData;
     foreach (Request* req, reqs) {
         // request
-        CommandInterface* cmd = new ReadTime();
+        CommandInterface* cmd = new ReadDispRam();
 
         cmd = new UdpDecorator(cmd);
         if(cmd->execute(*req,udp)) {
             // save data
-            for(int i=0;i<req->getAnswerData().count();i++) {
-                answerData.insert(req->getMemAddress()+i,req->getAnswerData().at(i));
+            for(int i=0;i<req->getRdData().count();i++) {
+                answerData.insert(req->getMemAddress()+i,(quint8)(req->getRdData().at(i)));
             }
         }
         delete cmd;
@@ -119,8 +119,8 @@ void LinkObject::answerAnalyse(QSharedPointer<ControllerData> plc, QHash<int, un
         int addr = anVar.getAddr();
         if((answerData.keys().contains(addr))&&(answerData.keys().contains(addr+1))) {
             updTimeFlag = true;
-            int value = answerData.value(addr) * 256;
-            value += answerData.value(addr+1);
+            int value = (quint8)answerData.value(addr+1) * 256;
+            value += (quint8)answerData.value(addr);
             float res = (float)value * anVar.getCoeff();
             // test limits
             anData.setValue(res);

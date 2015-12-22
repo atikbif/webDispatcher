@@ -14,6 +14,14 @@ function setOff(id) {
 	}
 }
 
+function setDisable(id) {
+    din = document.getElementById(id);
+    if(din!=null) {
+        din.src="disable.png";
+        din.alt="-";
+    }
+}
+
 function loadDin() {
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange=function() {
@@ -31,8 +39,9 @@ function loadDin() {
 				var idAndValue = /(.*)=(.*)/;
 				var par;
 				par = str.match(idAndValue);
-				if(par[2]=="1") setOn(par[1]);
-				else if(par[2]=="0") setOff(par[1]);
+                if(par[2]=="2") setOn(par[1]);
+                else if(par[2]=="1") setOff(par[1]);
+                else if(par[2]=="0") setDisable(par[1]);
 			}			
 		}
     }

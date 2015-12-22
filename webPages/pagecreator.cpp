@@ -333,6 +333,7 @@ void PageCreator::createAnalogValuesScript(QSharedPointer<ObjectData> ob)
         QTextStream in(&pFile);
         in.setCodec("UTF-8");
         QString pattern = in.readAll();
+        pattern.replace("obPageName",ob->getHTMLPageName().remove(".html"));
         pFile.close();
         QFile file(scriptFileName);
         if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -374,6 +375,7 @@ void PageCreator::createMessageScript(QSharedPointer<ObjectData> ob)
         QTextStream in(&pFile);
         in.setCodec("UTF-8");
         QString pattern = in.readAll();
+        pattern.replace("obPageName",ob->getHTMLPageName().remove(".html"));
         pFile.close();
         QFile file(scriptFileName);
         if(file.open(QIODevice::WriteOnly | QIODevice::Text)) {

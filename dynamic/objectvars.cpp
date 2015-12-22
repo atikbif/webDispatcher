@@ -5,12 +5,15 @@ void ObjectVars::clear()
     foreach(AnalogDataVar* v, anVars) {
         delete v;
     }
+    anVars.clear();
     foreach (DiscreteDataVar* v, dVars) {
         delete v;
     }
+    dVars.clear();
     foreach (MessageDataVar *v, mVars) {
         delete v;
     }
+    mVars.clear();
 }
 
 ObjectVars::ObjectVars():col(GRAY),varsTime(QDateTime::currentDateTime()),id("")
@@ -23,6 +26,7 @@ ObjectVars::ObjectVars(const ObjectVars &ob)
     clear();
     col = ob.getColour();
     varsTime = ob.getTime();
+    id = ob.getID();
     for(int i=0;i<ob.getAnVarCount();i++) {
         addAnalogVar(ob.getAnalogVar(i));
     }
@@ -43,6 +47,7 @@ ObjectVars &ObjectVars::operator=(const ObjectVars &ob)
     clear();
     col = ob.getColour();
     varsTime = ob.getTime();
+    id = ob.getID();
     for(int i=0;i<ob.getAnVarCount();i++) {
         addAnalogVar(ob.getAnalogVar(i));
     }

@@ -86,6 +86,7 @@ function loadAin() {
 				var idAndValue = /(.*)=(.*)/;
 				var par;
 				par = str.match(idAndValue);
+
 				var anV = getAnVar(par[1]);
 				if(anV!=null) {
 					var aData = par[2];
