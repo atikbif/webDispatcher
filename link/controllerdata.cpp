@@ -15,6 +15,8 @@ void ControllerData::readAnalogVars(QDomDocument &doc)
             QString min;
             QString max;
             QString coeff;
+            QString minLim;
+            QString maxLim;
             QDomNodeList chNodes = e.childNodes();
             for(int j=0;j<chNodes.count();j++) {
                 QDomNode n = chNodes.item(j);
@@ -27,6 +29,8 @@ void ControllerData::readAnalogVars(QDomDocument &doc)
                     else if(e.tagName()=="min") min = e.text();
                     else if(e.tagName()=="max") max = e.text();
                     else if(e.tagName()=="coeff") coeff = e.text();
+                    else if(e.tagName()=="minLimit") minLim = e.text();
+                    else if(e.tagName()=="maxLimit") maxLim = e.text();
                 }
             }
             AnalogValue* v = new AnalogValue(ipAddr+":"+QString::number(portNum)+":"+name,comment);
@@ -40,6 +44,8 @@ void ControllerData::readAnalogVars(QDomDocument &doc)
             if(!min.isEmpty()) v->setMin(min.toFloat());
             if(!max.isEmpty()) v->setMax(max.toFloat());
             if(!coeff.isEmpty()) v->setCoeff(coeff.toFloat());
+            if(!minLim.isEmpty()) v->setMinLimit(minLim.toFloat());
+            if(!maxLim.isEmpty()) v->setMaxLimit(maxLim.toFloat());
             vars->addAnalogVar(v);
         }
     }

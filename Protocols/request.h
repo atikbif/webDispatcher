@@ -17,8 +17,11 @@ class Request
     QByteArray answerData;      // необработанный ответ
     QHash<QString, QString> params;     // дополнительные параметры для расширения функционала
     QByteArray reqBody;
+    int waitTime;
 public:
     Request();
+    int getWaitTime() const {return waitTime;}
+    void setWaitTime(int value) {waitTime = value;}
     void setNetAddress(int value) {netAddr=value;}
     int getNetAddress(void) const {return netAddr;}
     void setMemAddress(int value) {memAddr=value;}

@@ -268,6 +268,7 @@ void PageCreator::createObjScript(QSharedPointer<ObjectData> ob)
         QTextStream in(&pFile);
         in.setCodec("UTF-8");
         QString pattern = in.readAll();
+        pattern.replace("obPageName",ob->getHTMLPageName().remove(".html"));
 
         int contrCount = ob->getContrCount();
 
@@ -296,7 +297,7 @@ void PageCreator::createObjScript(QSharedPointer<ObjectData> ob)
                         addTabs(2,settings);
                         settings += "anVar[" + QString::number(visVarCnt) + "].max=" + QString::number(av.getMax()) + ";\n";
                         addTabs(2,settings);
-                        settings += "anVar[" + QString::number(visVarCnt) + "].value=" + QString::number(av.getMax()) + ";\n";
+                        settings += "anVar[" + QString::number(visVarCnt) + "].value=0;\n";
                         pos+=curPattern.length();
                         pattern.insert(pos,settings);pos+=settings.length();
                         visVarCnt++;

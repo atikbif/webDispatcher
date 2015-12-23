@@ -5,7 +5,7 @@
 #include <QDir>
 
 ObjectData::ObjectData(const QString &fName):
-    name(""),comment(""),htmlPageName("")
+    name(""),comment(""),htmlPageName(""),waitTime(0),period(1)
 {
     QDomDocument doc("objConfig");
     QFile file(fName);
@@ -28,6 +28,16 @@ ObjectData::ObjectData(const QString &fName):
     if(pages.count()==1) {
         QDomElement e = pages.item(0).toElement();
         if(!e.isNull()) htmlPageName = e.text();
+    }
+    QDomNodeList perTime = doc.elementsByTagName("period");
+    if(perTime.count()==1) {
+        QDomElement e = perTime.item(0).toElement();
+        if(!e.isNull()) period = e.text().toInt();
+    }
+    QDomNodeList wait = doc.elementsByTagName("wait");
+    if(wait.count()==1) {
+        QDomElement e = wait.item(0).toElement();
+        if(!e.isNull()) waitTime = e.text().toInt();
     }
     QDomNodeList plcs = doc.elementsByTagName("controller");
     for(int i=0;i<plcs.count();i++) {

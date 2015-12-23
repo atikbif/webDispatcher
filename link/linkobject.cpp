@@ -82,6 +82,7 @@ QVector<Request *> LinkObject::getRequestLine(QSharedPointer<ControllerData> plc
             }
         }
         if(req!=nullptr) {
+            if(obPtr->getWaitTime()) req->setWaitTime(obPtr->getWaitTime());
             reqs.append(req);
         }
     }
@@ -124,7 +125,8 @@ void LinkObject::answerAnalyse(QSharedPointer<ControllerData> plc, QHash<int, un
             float res = (float)value * anVar.getCoeff();
             // test limits
             anData.setValue(res);
-            anData.setColour(AnalogDataVar::GREEN);
+            if((res<anVar.getMinLimit())||(res>anVar.getMaxLimit())) anData.setColour(AnalogDataVar::RED);
+            else anData.setColour(AnalogDataVar::GREEN);
         }
         obVars.addAnalogVar(anData);
     }
@@ -276,8 +278,15 @@ void LinkObject::startScanning()
             mutex.lock();
             if(stopCmd) {mutex.unlock();break;}
             mutex.unlock();
-            QThread::msleep(1);
+            QThread::msleep(10);
         }
         DataStorage::Instance().updateObject(obVars);
+        for(int i=0;i<obPtr->getPeriod();i++) {
+            mutex.lock();
+            if(stopCmd) {mutex.unlock();break;}
+            mutex.unlock();
+            QThread::sleep(1);
+        }
+
     }
 }

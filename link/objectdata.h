@@ -15,6 +15,8 @@ class ObjectData
     QVector<QSharedPointer<ControllerData> > controllers;
     QString htmlPageName;
     void addController(QSharedPointer<ControllerData> contr) {controllers.append(contr);}
+    int waitTime;
+    int period;
 public:
     ObjectData(const QString &fName);
     int getContrCount(void) {return controllers.count();}
@@ -22,6 +24,8 @@ public:
     QString getName(void) {return name;}
     QString getComment(void) {return comment;}
     QString getHTMLPageName(void) {return htmlPageName;}
+    int getWaitTime() const {return waitTime;}
+    int getPeriod() const {return period;}
     ~ObjectData();
 };
 

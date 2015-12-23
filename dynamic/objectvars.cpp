@@ -54,7 +54,7 @@ ObjectVars &ObjectVars::operator=(const ObjectVars &ob)
     for(int i=0;i<ob.getDiscrVarCount();i++) {
         addDiscreteVar(ob.getDiscreteVar(i));
     }
-    for(int i=0;i<getMessageVarCount();i++) {
+    for(int i=0;i<ob.getMessageVarCount();i++) {
         addMessageVar(ob.getMessageVar(i));
     }
     return *this;

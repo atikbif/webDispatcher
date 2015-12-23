@@ -10,7 +10,7 @@ void Request::setAnswerData(const QByteArray &value)
 {
     answerData = value;
 }
-Request::Request():netAddr(1),memAddr(0),dataNumber(0)
+Request::Request():netAddr(1),memAddr(0),dataNumber(0),waitTime(0)
 {
     
 }

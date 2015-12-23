@@ -35,8 +35,17 @@ bool UdpDecorator::execute(Request &req, QIODevice &io)
     QByteArray rxData;
     int cnt = 0;
     while(1) {
-        QThread::currentThread()->msleep(15);
-        rxData = io.readAll();
+        int wait = 15;
+        if(req.getWaitTime()!=0) wait = req.getWaitTime();
+        int length=0;
+        for(int i=0;i<wait;i++) {
+            QThread::currentThread()->msleep(1);
+            rxData+=io.readAll();
+            if(rxData.count()) {
+                if(length==rxData.count()) break;
+                length = rxData.count();
+            }
+        }
         if(rxData.count()) {
             req.updateRdData(rxData);
             req.setAnswerData(rxData);

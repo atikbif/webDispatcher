@@ -47,7 +47,7 @@ QString DynReqManager::getAnalogData(const QString &reqObName)
                 float value = var.getValue();
                 res+=QString::number(value);
                 int col = 0;
-                if(var.getColour()==AnalogDataVar::GRAY) col=0;
+                if(var.getColour()==AnalogDataVar::GRAY) col=2;
                 else if(var.getColour()==AnalogDataVar::GREEN) col=1;
                 else if(var.getColour()==AnalogDataVar::YELLOW) col=2;
                 else if(var.getColour()==AnalogDataVar::RED) col=3;

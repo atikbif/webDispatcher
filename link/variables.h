@@ -31,10 +31,11 @@ class AnalogValue: public ObjVariable
 {
     int addr;
     float min,max,coeff;
+    float minLimit,maxLimit;
 public:
     AnalogValue(const QString &m_name, const QString &m_comment="", PRIORITY prior = NORM_PR):
         ObjVariable(m_name,m_comment,prior),addr(0),
-        min(0),max(65535),coeff(1)
+        min(0),max(65535),coeff(1),minLimit(0),maxLimit(65535)
     {
 
     }
@@ -46,6 +47,10 @@ public:
     void setCoeff(float value) {coeff = value;}
     int getAddr() const {return addr;}
     void setAddr(int newAddr) {addr = newAddr;}
+    float getMinLimit() const {return minLimit;}
+    float getMaxLimit() const {return maxLimit;}
+    void setMinLimit(float value) {minLimit = value;}
+    void setMaxLimit(float value) {maxLimit = value;}
 };
 
 class DiscretValue: public ObjVariable

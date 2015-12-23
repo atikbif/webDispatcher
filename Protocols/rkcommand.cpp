@@ -18,7 +18,9 @@ bool RkCommand::waitAnAnswer(Request &req, QIODevice &io)
 {
     if(io.isOpen()){
         QByteArray answer;
-        if(io.waitForReadyRead(100)){
+        int wait = 100;
+        if(req.getWaitTime()!=0) wait = req.getWaitTime();
+        if(io.waitForReadyRead(wait)){
             int cnt=0;
             answer+=io.readAll();
             while(io.waitForReadyRead(10)) {

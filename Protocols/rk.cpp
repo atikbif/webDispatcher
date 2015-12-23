@@ -93,7 +93,9 @@ bool WriteFram::waitAnAnswer(Request &req, QIODevice &io)
     static const int maxCnt = 500; // ограничение ожидания ответа при длительном входящем потоке данных
     if(io.isOpen()){
         QByteArray answer;
-        if(io.waitForReadyRead(200)){
+        int wait = 200;
+        if(req.getWaitTime()!=0) wait = req.getWaitTime();
+        if(io.waitForReadyRead(wait)){
             int cnt=0;
             answer+=io.readAll();
             while(io.waitForReadyRead(10)) {
@@ -212,7 +214,9 @@ bool ReadFram::waitAnAnswer(Request &req, QIODevice &io)
     static const int maxCnt = 500; // ограничение ожидания ответа при длительном входящем потоке данных
     if(io.isOpen()){
         QByteArray answer;
-        if(io.waitForReadyRead(200)){
+        int wait = 200;
+        if(req.getWaitTime()!=0) wait = req.getWaitTime();
+        if(io.waitForReadyRead(wait)){
             int cnt=0;
             answer+=io.readAll();
             while(io.waitForReadyRead(10)) {
@@ -342,7 +346,9 @@ bool WriteTime::waitAnAnswer(Request &req, QIODevice &io)
     static const int maxCnt = 500; // ограничение ожидания ответа при длительном входящем потоке данных
     if(io.isOpen()){
         QByteArray answer;
-        if(io.waitForReadyRead(200)){
+        int wait = 200;
+        if(req.getWaitTime()!=0) wait = req.getWaitTime();
+        if(io.waitForReadyRead(wait)){
             int cnt=0;
             answer+=io.readAll();
             while(io.waitForReadyRead(10)) {

@@ -26,7 +26,7 @@ function loadMessage() {
   xhttp.onreadystatechange=function() {
     if (xhttp.readyState == 4 && xhttp.status == 200) {
         var resp = xhttp.responseText;
-        document.getElementById("debug").innerHTML = resp;
+        //document.getElementById("debug").innerHTML = resp;
         var i;
         for(i=1;i<=10;i++) {clearMessage("mes"+i);}
         var pattern = /;/;
