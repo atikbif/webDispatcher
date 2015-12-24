@@ -16,6 +16,8 @@ public:
     ~ObjectManager();
 signals:
     void startScanning(void);
+    void correctAnswer(QString ip);
+    void noAnswer(QString ip);
 };
 
 #endif // OBJECTMANAGER_H

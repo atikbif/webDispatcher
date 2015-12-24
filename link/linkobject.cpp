@@ -91,17 +91,16 @@ QVector<Request *> LinkObject::getRequestLine(QSharedPointer<ControllerData> plc
     return reqs;
 }
 
-QHash<int, unsigned int> LinkObject::getAnswers(QVector<Request *> reqs, QTcpSocket &tcp)
+QHash<int, unsigned int> LinkObject::getAnswers(QVector<Request *> reqs, QTcpSocket &tcp, QString ip)
 {
     QHash<int, unsigned int> answerData;
-
+    bool linkStat = true;
     foreach (Request* req, reqs) {
         // request
         CommandInterface* cmd = new ReadDispRam();
-
-        //cmd = new UdpDecorator(cmd);
         cmd = new TcpDecorator(cmd);
-        for(int i=0;i<5;i++) {
+        int i=0;
+        for(i=0;i<5;i++) {
             if(cmd->execute(*req,tcp)) {
                 // save data
                 for(int i=0;i<req->getRdData().count();i++) {
@@ -111,9 +110,12 @@ QHash<int, unsigned int> LinkObject::getAnswers(QVector<Request *> reqs, QTcpSoc
             }
             QThread::msleep(10);
         }
+        if(i==5) linkStat = false;
         delete cmd;
         QThread::msleep(10);
     }
+    if(linkStat) emit correctAnswer(ip);
+    else emit noAnswer(ip);
     return answerData;
 }
 
@@ -274,7 +276,7 @@ void LinkObject::startScanning()
                 // create request line
                 QVector<Request*> reqs = getRequestLine(plc);
                 // read data
-                QHash<int,unsigned int> answerData = getAnswers(reqs,*tcp);
+                QHash<int,unsigned int> answerData = getAnswers(reqs,*tcp,plc->getIP());
 
                 // free requests' memory
                 foreach(Request* req, reqs) {delete req;}
@@ -288,6 +290,7 @@ void LinkObject::startScanning()
                 QThread::msleep(10);
             }else {
                 if(tcp->state()==QTcpSocket::UnconnectedState) {
+                    emit noAnswer(plc->getIP());
                     tcp->connectToHost(plc->getIP(),plc->getPortNum());
                     tcp->waitForConnected();
                     tcp->setSocketOption(QAbstractSocket::LowDelayOption,1);

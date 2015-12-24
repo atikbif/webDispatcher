@@ -3,6 +3,7 @@
 #include "server/servermanager.h"
 #include <QDateTime>
 #include "webPages/pagecreator.h"
+#include <QBrush>
 
 
 const QString MainWindow::mainXMLFileName="config.xml";
@@ -19,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
     PageCreator pCr(*obTree);
     pCr.createPages();
     link = new LinkManager(obTree);
+    connect(link,SIGNAL(correctAnswer(QString)),this,SLOT(correctAnswer(QString)));
+    connect(link,SIGNAL(noAnswer(QString)),this,SLOT(noAnswer(QString)));
 }
 
 MainWindow::~MainWindow()
@@ -30,6 +33,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::updTree()
 {
+    plcItems.clear();
     ui->treeWidget->clear();
     QStringList groups = obTree->getGroupNames();
     foreach(QString grName, groups) {
@@ -43,6 +47,7 @@ void MainWindow::updTree()
                 QSharedPointer<ControllerData> plc = objPtr->getController(k);
                 QString plcDef = plc->getComment() + " (" + plc->getIP() + ":" + QString::number(plc->getPortNum()) + ")";
                 QTreeWidgetItem* plcItem = new QTreeWidgetItem(obItem,QStringList()<<plcDef);
+                plcItems.insert(plc->getIP(),plcItem);
                 QSharedPointer<VarStorage> vars = plc->getVars();
                 int anVarsCount = vars->getAnVarCount();
                 if(anVarsCount) {
@@ -112,5 +117,23 @@ void MainWindow::on_pushButtonUpdObjects_clicked()
         updTree();
         PageCreator pCr(*obTree);
         pCr.createPages();
+    }
+}
+
+void MainWindow::correctAnswer(QString ip)
+{
+    if(plcItems.keys().contains(ip)) {
+        QTreeWidgetItem* item = plcItems.value(ip);
+        item->setForeground(0,QBrush(Qt::darkGreen));
+        ui->treeWidget->repaint();
+    }
+}
+
+void MainWindow::noAnswer(QString ip)
+{
+    if(plcItems.keys().contains(ip)) {
+        QTreeWidgetItem* item = plcItems.value(ip);
+        item->setForeground(0,QBrush(Qt::darkRed));
+        ui->treeWidget->repaint();
     }
 }

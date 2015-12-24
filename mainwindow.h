@@ -5,6 +5,8 @@
 #include <QString>
 #include "link/objlist.h"
 #include "link/linkmanager.h"
+#include <QHash>
+#include <QTreeWidgetItem>
 
 namespace Ui {
 class MainWindow;
@@ -16,6 +18,7 @@ class MainWindow : public QMainWindow
     ObjList* obTree;
     LinkManager* link;
     static const QString mainXMLFileName;
+    QHash<QString, QTreeWidgetItem*> plcItems;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -26,6 +29,8 @@ private:
 private slots:
     void newWebClient(const QString &ipAddr);
     void on_pushButtonUpdObjects_clicked();
+    void correctAnswer(QString ip);
+    void noAnswer(QString ip);
 };
 
 #endif // MAINWINDOW_H
