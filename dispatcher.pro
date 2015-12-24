@@ -55,6 +55,7 @@ SOURCES += main.cpp\
     Protocols/rk.cpp \
     Protocols/rkcommand.cpp \
     Protocols/udpdecorator.cpp \
+    Protocols/tcpdecorator.cpp
 
 HEADERS  += mainwindow.h \
     qhttpserver-master/http-parser/http_parser.h \
@@ -88,6 +89,7 @@ HEADERS  += mainwindow.h \
     Protocols/rk.h \
     Protocols/rkcommand.h \
     Protocols/udpdecorator.h \
+    Protocols/tcpdecorator.h
 
 FORMS    += mainwindow.ui
 

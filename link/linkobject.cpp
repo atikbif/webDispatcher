@@ -1,8 +1,10 @@
 #include "linkobject.h"
 #include "Protocols/rk.h"
 #include "Protocols/udpdecorator.h"
+#include "Protocols/tcpdecorator.h"
 #include <QThread>
 #include "dynamic/datastorage.h"
+
 
 using namespace RkProtocol;
 
@@ -89,19 +91,25 @@ QVector<Request *> LinkObject::getRequestLine(QSharedPointer<ControllerData> plc
     return reqs;
 }
 
-QHash<int, unsigned int> LinkObject::getAnswers(QVector<Request *> reqs, QUdpSocket &udp)
+QHash<int, unsigned int> LinkObject::getAnswers(QVector<Request *> reqs, QTcpSocket &tcp)
 {
     QHash<int, unsigned int> answerData;
+
     foreach (Request* req, reqs) {
         // request
         CommandInterface* cmd = new ReadDispRam();
 
-        cmd = new UdpDecorator(cmd);
-        if(cmd->execute(*req,udp)) {
-            // save data
-            for(int i=0;i<req->getRdData().count();i++) {
-                answerData.insert(req->getMemAddress()+i,(quint8)(req->getRdData().at(i)));
+        //cmd = new UdpDecorator(cmd);
+        cmd = new TcpDecorator(cmd);
+        for(int i=0;i<5;i++) {
+            if(cmd->execute(*req,tcp)) {
+                // save data
+                for(int i=0;i<req->getRdData().count();i++) {
+                    answerData.insert(req->getMemAddress()+i,(quint8)(req->getRdData().at(i)));
+                }
+                break;
             }
+            QThread::msleep(10);
         }
         delete cmd;
         QThread::msleep(10);
@@ -241,8 +249,15 @@ void LinkObject::stopScanning()
 
 void LinkObject::startScanning()
 {
-    QUdpSocket udp;
     int plcQuantity = obPtr->getContrCount();
+    for(int i=0;i<plcQuantity;i++) {
+        QSharedPointer<ControllerData> plc = obPtr->getController(i);
+        QTcpSocket* tcp = new QTcpSocket();
+        tcp->connectToHost(plc->getIP(),plc->getPortNum());
+        tcp->waitForConnected();
+        tcp->setSocketOption(QAbstractSocket::LowDelayOption,1);
+        sockets.insert(plc->getIP(),tcp);
+    }
 
     forever {
         mutex.lock();
@@ -251,42 +266,53 @@ void LinkObject::startScanning()
 
         ObjectVars obVars;
         obVars.setID(obPtr->getHTMLPageName());
-
+        qint64 startTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
         for(int i=0;i<plcQuantity;i++) {
             QSharedPointer<ControllerData> plc = obPtr->getController(i);
-            udp.connectToHost(plc->getIP(),plc->getPortNum());
-            udp.waitForConnected();
-            udp.open(QIODevice::ReadWrite);
+            QTcpSocket* tcp = sockets.value(plc->getIP());
+            if(tcp->state()==QTcpSocket::ConnectedState) {
+                // create request line
+                QVector<Request*> reqs = getRequestLine(plc);
+                // read data
+                QHash<int,unsigned int> answerData = getAnswers(reqs,*tcp);
 
-            // create request line
-            QVector<Request*> reqs = getRequestLine(plc);
+                // free requests' memory
+                foreach(Request* req, reqs) {delete req;}
 
-            // read data
-            QHash<int,unsigned int> answerData = getAnswers(reqs,udp);
+                // data analyse
+                answerAnalyse(plc,answerData,obVars);
 
-            // free requests' memory
-            foreach(Request* req, reqs) {
-                delete req;
+                mutex.lock();
+                if(stopCmd) {mutex.unlock();break;}
+                mutex.unlock();
+                QThread::msleep(10);
+            }else {
+                if(tcp->state()==QTcpSocket::UnconnectedState) {
+                    tcp->connectToHost(plc->getIP(),plc->getPortNum());
+                    tcp->waitForConnected();
+                    tcp->setSocketOption(QAbstractSocket::LowDelayOption,1);
+                }
             }
-
-            udp.disconnectFromHost();
-            udp.close();
-
-            // data analyse
-            answerAnalyse(plc,answerData,obVars);
-
-            mutex.lock();
-            if(stopCmd) {mutex.unlock();break;}
-            mutex.unlock();
-            QThread::msleep(10);
         }
         DataStorage::Instance().updateObject(obVars);
-        for(int i=0;i<obPtr->getPeriod();i++) {
-            mutex.lock();
-            if(stopCmd) {mutex.unlock();break;}
-            mutex.unlock();
-            QThread::sleep(1);
+        qint64 stopTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
+        int delta = stopTime - startTime;
+        delta = obPtr->getPeriod() - delta;
+        if(delta>0) {
+            for(int i=0;i<delta;i++) {
+                mutex.lock();
+                if(stopCmd) {mutex.unlock();break;}
+                mutex.unlock();
+                QThread::msleep(1);
+            }
         }
-
     }
+    foreach (QTcpSocket* s, sockets.values()) {
+        if(s->state()==QTcpSocket::ConnectedState) {
+            s->disconnectFromHost();
+            if(s->state()!=QTcpSocket::UnconnectedState) s->waitForDisconnected(1000);
+        }
+        delete s;
+    }
+    sockets.clear();
 }
