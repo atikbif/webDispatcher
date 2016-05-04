@@ -33,24 +33,21 @@ bool TcpDecorator::execute(Request &req, QIODevice &io)
     QTcpSocket* s = dynamic_cast<QTcpSocket*>(&io);
     if(s->state()==QTcpSocket::ConnectedState) {
         s->write(req.getBody());
-        s->waitForBytesWritten();
+        s->waitForBytesWritten(100);
 
 
         QByteArray rxData;
 
         int wait = 15;
         if(req.getWaitTime()!=0) wait = req.getWaitTime();
-        int length=0;
-        for(int i=0;i<wait;i++) {
-            if(s->waitForReadyRead(1)) {
-                rxData+=s->readAll();
-                if(rxData.count()) {
-                    if(length==rxData.count()) break;
-                    length = rxData.count();
-                }
+
+        for(int i=0;i<wait/100;i++) {
+            if(s->waitForReadyRead(100)) {
+                rxData=s->readAll();
+                break;
             }
         }
-        if(rxData.count()) {
+        if(rxData.count()==1+req.getDataNumber()+2) {
             req.updateRdData(rxData);
             req.setAnswerData(rxData);
             if(checkAnAnswer(req)) {

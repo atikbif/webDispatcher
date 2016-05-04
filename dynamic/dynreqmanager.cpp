@@ -92,7 +92,7 @@ QString DynReqManager::geObtStatusData(const QString &reqObName)
         obName.remove(".html");
         if(obName==reqObName) {
             QString res;
-            res = vars.getTime().toString();
+            res = vars.getTime().toString("dd.MM.yyyy hh:mm:ss");
             int col = 0;
             if(vars.getColour()==ObjectVars::GRAY) col=0;
             else if(vars.getColour()==ObjectVars::GREEN) col=1;

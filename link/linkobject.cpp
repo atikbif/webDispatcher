@@ -88,6 +88,11 @@ QVector<Request *> LinkObject::getRequestLine(QSharedPointer<ControllerData> plc
             reqs.append(req);
         }
     }
+
+    foreach (AnalogValue *var, vars) {
+        delete var;
+    }
+
     return reqs;
 }
 
@@ -97,25 +102,30 @@ QHash<int, unsigned int> LinkObject::getAnswers(QVector<Request *> reqs, QTcpSoc
     bool linkStat = true;
     foreach (Request* req, reqs) {
         // request
-        CommandInterface* cmd = new ReadDispRam();
-        cmd = new TcpDecorator(cmd);
+
         int i=0;
         for(i=0;i<5;i++) {
+            CommandInterface* cmd = new ReadDispRam();
+            cmd = new TcpDecorator(cmd);
             if(cmd->execute(*req,tcp)) {
                 // save data
                 for(int i=0;i<req->getRdData().count();i++) {
                     answerData.insert(req->getMemAddress()+i,(quint8)(req->getRdData().at(i)));
                 }
+                linkStat = true;
                 break;
             }
+            delete cmd;
             QThread::msleep(10);
         }
         if(i==5) linkStat = false;
-        delete cmd;
         QThread::msleep(10);
     }
     if(linkStat) emit correctAnswer(ip);
-    else emit noAnswer(ip);
+    else {
+        emit noAnswer(ip);
+        tcp.disconnectFromHost();
+    }
     return answerData;
 }
 
@@ -295,18 +305,19 @@ void LinkObject::startScanning()
                     tcp->waitForConnected();
                     tcp->setSocketOption(QAbstractSocket::LowDelayOption,1);
                 }
+                QThread::msleep(10);
             }
         }
         DataStorage::Instance().updateObject(obVars);
         qint64 stopTime = QDateTime::currentDateTime().toMSecsSinceEpoch();
-        int delta = stopTime - startTime;
-        delta = obPtr->getPeriod() - delta;
+        qint64 delta = stopTime - startTime;
+        delta = ((unsigned long)obPtr->getPeriod()*1000 - delta)/100;
         if(delta>0) {
             for(int i=0;i<delta;i++) {
                 mutex.lock();
                 if(stopCmd) {mutex.unlock();break;}
                 mutex.unlock();
-                QThread::msleep(1);
+                QThread::msleep(100);
             }
         }
     }

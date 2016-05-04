@@ -19,7 +19,7 @@ void PageCreator::createIndexFile(const QString &fName)
         QString pattern = in.readAll();
         pFile.close();
         // заголовок страницы
-        pattern = pattern.replace("page title","АРМ Диспетчера");
+        pattern = pattern.replace("Web Диспетчер","Web Диспетчер");
         QRegExp cont("<div class=\"container\">\n");
         int pos = cont.indexIn(pattern);
         if(pos!=-1) {

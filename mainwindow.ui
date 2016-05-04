@@ -80,11 +80,6 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabGate">
-       <attribute name="title">
-        <string>шлюз</string>
-       </attribute>
-      </widget>
      </widget>
     </item>
    </layout>
